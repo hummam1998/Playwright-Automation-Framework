@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "target": "es2022",  //ECMAScript 2022, also known as ES13 (ECMAScript 13th Edition)
+    "module": "commonjs",
+    "strict": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+}

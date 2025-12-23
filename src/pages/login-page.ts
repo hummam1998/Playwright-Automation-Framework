@@ -1,5 +1,6 @@
 import { Page, expect } from "@playwright/test";
 import { HomePage } from "./home-page";
+import logger from "../utils/LoggerUtil";
 
 
 export class LoginPage {
@@ -43,9 +44,9 @@ export class LoginPage {
 
     async clickLoginButton() {
         await this.loginButton().click().catch((error) => {
-            //  logger.error(`Error clicking login button: ${error}`);
+             logger.error(`Error clicking login button: ${error}`);
             throw error; // rethrow the error if needed
-        }).then(() => console.log("Clicked login button"));
+        }).then(() => logger.info("Clicked login button"));
 
         const homePage = new HomePage(this.page);
         return homePage;

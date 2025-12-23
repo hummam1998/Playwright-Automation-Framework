@@ -1,19 +1,27 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/login-page';
 import { decrypt } from '../utils/CryptojsUtil';
+import logger from '../utils/LoggerUtil';
 
-test("Login Page - Valid Credentials", async ({ page }) => {
-    // Arrange
-    const loginPage = new LoginPage(page);
-    await loginPage.navigateToLoginPage();
+const authFile = "src/config/auth.json";
 
-    await loginPage.fillUsername(decrypt(process.env.userid!));
-    await loginPage.fillPassword(decrypt(process.env.password!));
-    const homePage = await loginPage.clickLoginButton();
-    
-    await page.waitForTimeout(20000); // 3 seconds
+test("simple login test", async ({ page }) => {
+  const loginPage = new LoginPage(page);
+  await loginPage.navigateToLoginPage();
+  await loginPage.fillUsername(decrypt(process.env.username!));
+  await loginPage.fillPassword(decrypt(process.env.password!));
+  const homePage = await loginPage.clickLoginButton();
+  await homePage.expectServiceTitleToBeVisible();
+  logger.info("Test for login is completed");
+  await page.context().storageState({ path: authFile });
+  logger.info("Auth state is saved");
+});
 
-    // Assert
-    await expect(homePage.serviceTitle()).toBeVisible();
-    // logger.info("Login successful, Service title is visible on Home Page");
+test.skip("Login with auth file", async ({ browser }) => {
+  const context = await browser.newContext({ storageState: authFile });
+  const page = await context.newPage();
+  await page.goto(
+    "https://hummam-dev-ed.lightning.force.com/lightning/page/home"
+  );
+  await expect(page.getByRole("link", { name: "Accounts" })).toBeVisible();
 });
